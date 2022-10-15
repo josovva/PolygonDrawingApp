@@ -54,7 +54,7 @@ namespace GK_polygon_draw.Model.Drawings
             Points.Add(point);
             NumberOfPoints++;
             CountMovingPoint();
-            if (NumberOfPoints % 2 == 0)
+            if (NumberOfPoints > 1)
                 Edges.Add(new Line(Points[NumberOfPoints - 2], point));
         }
 

@@ -55,7 +55,7 @@ namespace GK_polygon_draw.Presenter
                             {
                                 return;
                             }
-                            Polygons.CreatingPolygon.Edges.Add(new Line(point, Polygons.CreatingPolygon.Points[0]));
+                            Polygons.CreatingPolygon.Edges.Add(new Line(Polygons.CreatingPolygon.Points[Polygons.CreatingPolygon.NumberOfPoints - 1], Polygons.CreatingPolygon.Points[0]));
                             Polygons.AddPolygon(Polygons.CreatingPolygon);
                             Draw.DrawPolygons(Polygons.Polygons);
                             Polygons.CreatingPolygon = null;
@@ -129,7 +129,6 @@ namespace GK_polygon_draw.Presenter
         {
             if(State == 2)
             {
-
                 MovingObject = null;
             }
         }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\STUDIA\\PW\\SEMESTR_5\\Grafika Komputerowa\\Grafika_komputerowa\\GK_polygon_draw\\GK_polygon_draw.csproj": {}
+    "D:\\STUDIA\\PW\\SEMESTR_5\\Grafika Komputerowa\\Poly_draw_repo\\Polygon_drawing\\GK_polygon_draw\\GK_polygon_draw.csproj": {}
   },
   "projects": {
-    "D:\\STUDIA\\PW\\SEMESTR_5\\Grafika Komputerowa\\Grafika_komputerowa\\GK_polygon_draw\\GK_polygon_draw.csproj": {
+    "D:\\STUDIA\\PW\\SEMESTR_5\\Grafika Komputerowa\\Poly_draw_repo\\Polygon_drawing\\GK_polygon_draw\\GK_polygon_draw.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\STUDIA\\PW\\SEMESTR_5\\Grafika Komputerowa\\Grafika_komputerowa\\GK_polygon_draw\\GK_polygon_draw.csproj",
+        "projectUniqueName": "D:\\STUDIA\\PW\\SEMESTR_5\\Grafika Komputerowa\\Poly_draw_repo\\Polygon_drawing\\GK_polygon_draw\\GK_polygon_draw.csproj",
         "projectName": "GK_polygon_draw",
-        "projectPath": "D:\\STUDIA\\PW\\SEMESTR_5\\Grafika Komputerowa\\Grafika_komputerowa\\GK_polygon_draw\\GK_polygon_draw.csproj",
+        "projectPath": "D:\\STUDIA\\PW\\SEMESTR_5\\Grafika Komputerowa\\Poly_draw_repo\\Polygon_drawing\\GK_polygon_draw\\GK_polygon_draw.csproj",
         "packagesPath": "C:\\Users\\Asia\\.nuget\\packages\\",
-        "outputPath": "D:\\STUDIA\\PW\\SEMESTR_5\\Grafika Komputerowa\\Grafika_komputerowa\\GK_polygon_draw\\obj\\",
+        "outputPath": "D:\\STUDIA\\PW\\SEMESTR_5\\Grafika Komputerowa\\Poly_draw_repo\\Polygon_drawing\\GK_polygon_draw\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Asia\\AppData\\Roaming\\NuGet\\NuGet.Config",
