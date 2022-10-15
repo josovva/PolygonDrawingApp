@@ -63,6 +63,14 @@ namespace GK_polygon_draw.Model.Drawings
             var item = Points.Find(p => Math.Abs(p.X - point.X) <= 10 && Math.Abs(p.Y - point.Y) <= 10);
             if(item != null)
             {
+                var edge1 = Edges.Find(e => e.StartPoint.X == item.X && e.StartPoint.Y == item.Y);
+                var edge2 = Edges.Find(e => e.EndPoint.X == item.X && e.EndPoint.Y == item.Y);
+                if(edge1 != null && edge2 != null)
+                {
+                    Edges.Add(new Line(edge2.StartPoint, edge1.EndPoint));
+                    Edges.Remove(edge1);
+                    Edges.Remove(edge2);
+                }
                 Points.Remove(item);
                 NumberOfPoints--;
                 if(NumberOfPoints > 0)
