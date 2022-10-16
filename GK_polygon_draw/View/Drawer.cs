@@ -19,11 +19,16 @@ namespace GK_polygon_draw.View
         public RadioButton CreatingMode => creatingMode;
         public RadioButton DeletingMode => deletingMode;
         public RadioButton MovingMode => movingMode;
+        public RadioButton InsertMode => insertMode;
+        public RadioButton BresY => bresenhamYes;
+        public RadioButton BresN => bresenhamNo;
+        public GroupBox drawingAlgo => DrawingAlgorithm;
 
         public Drawer()
         {
             InitializeComponent();
             creatingMode.Checked = true;
+            bresenhamNo.Checked = true;
             bitmap = new Bitmap(canvas.Width, canvas.Height);
             canvas.Image = bitmap;
 
@@ -59,6 +64,11 @@ namespace GK_polygon_draw.View
             {
                 g.DrawLine(Pens.Black, line.StartPoint.X, line.StartPoint.Y, line.EndPoint.X, line.EndPoint.Y);
             }
+        }
+
+        public void DrawLineBresenham(Line Line)
+        {
+
         }
 
         public void CleanCanvas()

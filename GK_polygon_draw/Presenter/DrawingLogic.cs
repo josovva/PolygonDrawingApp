@@ -17,13 +17,14 @@ namespace GK_polygon_draw.Presenter
         public Polygs Polygons { get; set; }
         public Drawer Draw { get; set; }
         private int State;
+        private int Bresenham;
         private IShape MovingObject;
 
         public DrawingLogic(Polygs polygons, Drawer draw)
         {
             Polygons = polygons;
             Draw = draw;
-            State = 0;
+            State = Bresenham = 0;
             MovingObject = null;
 
             Draw.Canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
@@ -32,6 +33,9 @@ namespace GK_polygon_draw.Presenter
             Draw.CreatingMode.CheckedChanged += new System.EventHandler(this.creatingMode_CheckedChanged);
             Draw.DeletingMode.CheckedChanged += new System.EventHandler(this.deletingMode_CheckedChanged);
             Draw.MovingMode.CheckedChanged += new System.EventHandler(this.movingMode_CheckedChanged);
+            Draw.BresY.CheckedChanged += new System.EventHandler(this.bresenhamYes_CheckedChanged);
+            Draw.BresN.CheckedChanged += new System.EventHandler(this.bresenhamNo_CheckedChanged);
+            Draw.InsertMode.CheckedChanged += new System.EventHandler(this.insertMode_CheckedChanged);
         }
 
         private void canvas_MouseDown(object sender, MouseEventArgs e)
@@ -49,7 +53,7 @@ namespace GK_polygon_draw.Presenter
                     }
                     else
                     {
-                        if (Math.Abs(point.X - Polygons.CreatingPolygon.Points[0].X) < Point.R && Math.Abs(point.Y - Polygons.CreatingPolygon.Points[0].Y) < Point.R)
+                        if(Polygons.CreatingPolygon.Collision(point) == Polygons.CreatingPolygon.Points[0])
                         {
                             if (Polygons.CreatingPolygon.Points.Count < 3)
                             {
@@ -96,7 +100,27 @@ namespace GK_polygon_draw.Presenter
                             break;
                     }           
                 }
-            }           
+            }   
+            else if(State == 3)
+            {
+                if(e.Button == MouseButtons.Left)
+                {
+                    foreach(var poly in Polygons.Polygons)
+                    {
+                        foreach(var ed in poly.Edges)
+                        {
+                            var ret = ed.Collision(new Point(e.X, e.Y));
+                            if (ret != null)
+                            {
+                                poly.AddPointOnEdge(ed);
+                                Draw.DrawPolygons(Polygons.Polygons);
+                                Draw.RefreshCanvas();
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
         }
         private void canvas_MouseMove(object sender, MouseEventArgs e)
         {
@@ -136,12 +160,14 @@ namespace GK_polygon_draw.Presenter
         private void creatingMode_CheckedChanged(object sender, EventArgs e)
         {
             State = 0;
+            Draw.drawingAlgo.Enabled = true;
             Draw.DrawPolygons(Polygons.Polygons);
             Draw.RefreshCanvas();
         }
         private void deletingMode_CheckedChanged(object sender, EventArgs e)
         {
             State = 1;
+            Draw.drawingAlgo.Enabled = false;
             Draw.DrawPolygons(Polygons.Polygons);
             Draw.RefreshCanvas();
         }
@@ -149,11 +175,27 @@ namespace GK_polygon_draw.Presenter
         {
             State = 2;
             MovingObject = null;
-            foreach(var polyg in Polygons.Polygons)
+            Draw.drawingAlgo.Enabled = false;
+            foreach (var polyg in Polygons.Polygons)
             {
                 Draw.DrawCenter(polyg.movingPoint);
                 Draw.RefreshCanvas();
             }
+        }
+        private void insertMode_CheckedChanged(object sender, EventArgs e)
+        {
+            State = 3;
+            Draw.drawingAlgo.Enabled = false;
+            Draw.DrawPolygons(Polygons.Polygons);
+            Draw.RefreshCanvas();
+        }
+        private void bresenhamYes_CheckedChanged(object sender, EventArgs e)
+        {
+            Bresenham = 1;
+        }
+        private void bresenhamNo_CheckedChanged(object sender, EventArgs e)
+        {
+            Bresenham = 0;
         }
     }
 }

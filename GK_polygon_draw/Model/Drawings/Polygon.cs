@@ -94,9 +94,24 @@ namespace GK_polygon_draw.Model.Drawings
             movingPoint.Y = movingPoint.Y / NumberOfPoints;
         }
 
-        public void AddPointOnEdge(Point endP, Point newP)
+        public bool AddPointOnEdge(Line edge)
         {
-           // var i = Points.FindIndex(p => p.X == endP.X && p.Y == endP.Y);
+            foreach(var e in Edges)
+            {
+                if(e == edge)
+                {
+                    Point newP = new Point((edge.StartPoint.X + edge.EndPoint.X) / 2, (edge.StartPoint.Y + edge.EndPoint.Y) / 2);
+                    int index = Points.IndexOf(edge.EndPoint);
+                    Points.Insert(index, newP);
+                    Edges.Add(new Line(edge.StartPoint, newP));
+                    Edges.Add(new Line(newP, edge.EndPoint));
+                    Edges.Remove(edge);
+                    NumberOfPoints++;
+                    return true;
+                }
+            }
+            return false;
+            
         }
     }
 }

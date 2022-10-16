@@ -34,9 +34,14 @@ namespace GK_polygon_draw.View
             this.movingMode = new System.Windows.Forms.RadioButton();
             this.deletingMode = new System.Windows.Forms.RadioButton();
             this.creatingMode = new System.Windows.Forms.RadioButton();
+            this.DrawingAlgorithm = new System.Windows.Forms.GroupBox();
+            this.bresenhamNo = new System.Windows.Forms.RadioButton();
+            this.bresenhamYes = new System.Windows.Forms.RadioButton();
             this.canvas = new System.Windows.Forms.PictureBox();
+            this.insertMode = new System.Windows.Forms.RadioButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.modeSelector.SuspendLayout();
+            this.DrawingAlgorithm.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
             // 
@@ -46,23 +51,27 @@ namespace GK_polygon_draw.View
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.modeSelector, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.DrawingAlgorithm, 0, 1);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(947, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 17.65553F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.4279F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 17.97915F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 53.93743F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(200, 642);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // modeSelector
             // 
+            this.modeSelector.Controls.Add(this.insertMode);
             this.modeSelector.Controls.Add(this.movingMode);
             this.modeSelector.Controls.Add(this.deletingMode);
             this.modeSelector.Controls.Add(this.creatingMode);
+            this.modeSelector.Dock = System.Windows.Forms.DockStyle.Fill;
             this.modeSelector.Location = new System.Drawing.Point(3, 3);
             this.modeSelector.Name = "modeSelector";
-            this.modeSelector.Size = new System.Drawing.Size(194, 208);
+            this.modeSelector.Size = new System.Drawing.Size(194, 107);
             this.modeSelector.TabIndex = 2;
             this.modeSelector.TabStop = false;
             this.modeSelector.Text = "Mode";
@@ -103,6 +112,42 @@ namespace GK_polygon_draw.View
             this.creatingMode.Text = "Create";
             this.creatingMode.UseVisualStyleBackColor = true;
             // 
+            // DrawingAlgorithm
+            // 
+            this.DrawingAlgorithm.Controls.Add(this.bresenhamNo);
+            this.DrawingAlgorithm.Controls.Add(this.bresenhamYes);
+            this.DrawingAlgorithm.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DrawingAlgorithm.Location = new System.Drawing.Point(3, 116);
+            this.DrawingAlgorithm.Name = "DrawingAlgorithm";
+            this.DrawingAlgorithm.Size = new System.Drawing.Size(194, 60);
+            this.DrawingAlgorithm.TabIndex = 3;
+            this.DrawingAlgorithm.TabStop = false;
+            this.DrawingAlgorithm.Text = "Use Bresenham Algorithm?";
+            // 
+            // bresenhamNo
+            // 
+            this.bresenhamNo.AutoSize = true;
+            this.bresenhamNo.Dock = System.Windows.Forms.DockStyle.Left;
+            this.bresenhamNo.Location = new System.Drawing.Point(45, 19);
+            this.bresenhamNo.Name = "bresenhamNo";
+            this.bresenhamNo.Size = new System.Drawing.Size(41, 38);
+            this.bresenhamNo.TabIndex = 1;
+            this.bresenhamNo.TabStop = true;
+            this.bresenhamNo.Text = "No";
+            this.bresenhamNo.UseVisualStyleBackColor = true;
+            // 
+            // bresenhamYes
+            // 
+            this.bresenhamYes.AutoSize = true;
+            this.bresenhamYes.Dock = System.Windows.Forms.DockStyle.Left;
+            this.bresenhamYes.Location = new System.Drawing.Point(3, 19);
+            this.bresenhamYes.Name = "bresenhamYes";
+            this.bresenhamYes.Size = new System.Drawing.Size(42, 38);
+            this.bresenhamYes.TabIndex = 0;
+            this.bresenhamYes.TabStop = true;
+            this.bresenhamYes.Text = "Yes";
+            this.bresenhamYes.UseVisualStyleBackColor = true;
+            // 
             // canvas
             // 
             this.canvas.BackColor = System.Drawing.SystemColors.ControlLightLight;
@@ -111,6 +156,18 @@ namespace GK_polygon_draw.View
             this.canvas.Size = new System.Drawing.Size(920, 618);
             this.canvas.TabIndex = 1;
             this.canvas.TabStop = false;
+            // 
+            // insertMode
+            // 
+            this.insertMode.AutoSize = true;
+            this.insertMode.Dock = System.Windows.Forms.DockStyle.Top;
+            this.insertMode.Location = new System.Drawing.Point(3, 76);
+            this.insertMode.Name = "insertMode";
+            this.insertMode.Size = new System.Drawing.Size(188, 19);
+            this.insertMode.TabIndex = 3;
+            this.insertMode.TabStop = true;
+            this.insertMode.Text = "Insert Point";
+            this.insertMode.UseVisualStyleBackColor = true;
             // 
             // Drawer
             // 
@@ -124,6 +181,8 @@ namespace GK_polygon_draw.View
             this.tableLayoutPanel1.ResumeLayout(false);
             this.modeSelector.ResumeLayout(false);
             this.modeSelector.PerformLayout();
+            this.DrawingAlgorithm.ResumeLayout(false);
+            this.DrawingAlgorithm.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             this.ResumeLayout(false);
 
@@ -137,5 +196,9 @@ namespace GK_polygon_draw.View
         private System.Windows.Forms.RadioButton creatingMode;
         private System.Windows.Forms.RadioButton movingMode;
         private System.Windows.Forms.RadioButton deletingMode;
+        private System.Windows.Forms.GroupBox DrawingAlgorithm;
+        private System.Windows.Forms.RadioButton bresenhamNo;
+        private System.Windows.Forms.RadioButton bresenhamYes;
+        private System.Windows.Forms.RadioButton insertMode;
     }
 }
