@@ -88,7 +88,14 @@ namespace GK_polygon_draw.View
             float numerator = absdistX;
             for (int i = 0; i <= absdistX; i++)
             {
-                bitmap.SetPixel((int)x, (int)y, Color.Black);
+                try
+                {
+                    bitmap.SetPixel((int)x, (int)y, Color.Black);
+                }
+                catch(Exception e)
+                {
+                    return;
+                }
                 numerator += absdistY;
                 if (!(numerator < absdistX))
                 {

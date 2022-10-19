@@ -4,5 +4,8 @@
     <Compile Update="View\Drawer.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="View\SetLengthWin.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

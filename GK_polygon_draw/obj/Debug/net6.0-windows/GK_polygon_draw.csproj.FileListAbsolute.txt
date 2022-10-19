@@ -32,3 +32,4 @@ D:\STUDIA\PW\SEMESTR_5\Grafika Komputerowa\Poly_draw_repo\Polygon_drawing\GK_pol
 D:\STUDIA\PW\SEMESTR_5\Grafika Komputerowa\Poly_draw_repo\Polygon_drawing\GK_polygon_draw\obj\Debug\net6.0-windows\GK_polygon_draw.pdb
 D:\STUDIA\PW\SEMESTR_5\Grafika Komputerowa\Poly_draw_repo\Polygon_drawing\GK_polygon_draw\obj\Debug\net6.0-windows\GK_polygon_draw.genruntimeconfig.cache
 D:\STUDIA\PW\SEMESTR_5\Grafika Komputerowa\Poly_draw_repo\Polygon_drawing\GK_polygon_draw\obj\Debug\net6.0-windows\ref\GK_polygon_draw.dll
+D:\STUDIA\PW\SEMESTR_5\Grafika Komputerowa\Poly_draw_repo\Polygon_drawing\GK_polygon_draw\obj\Debug\net6.0-windows\GK_polygon_draw.View.SetLengthWin.resources
