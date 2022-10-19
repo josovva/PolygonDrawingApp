@@ -23,6 +23,7 @@ namespace GK_polygon_draw.View
         public RadioButton BresY => bresenhamYes;
         public RadioButton BresN => bresenhamNo;
         public GroupBox drawingAlgo => DrawingAlgorithm;
+        public RadioButton setLength => setLgthButton;
 
         public Drawer()
         {
@@ -63,6 +64,14 @@ namespace GK_polygon_draw.View
             using (Graphics g = Graphics.FromImage(bitmap))
             {
                 g.DrawLine(Pens.Black, line.StartPoint.X, line.StartPoint.Y, line.EndPoint.X, line.EndPoint.Y);
+            }
+        }
+
+        public void DrawLine(Line line, Pen pen)
+        {
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                g.DrawLine(pen, line.StartPoint.X, line.StartPoint.Y, line.EndPoint.X, line.EndPoint.Y);
             }
         }
 

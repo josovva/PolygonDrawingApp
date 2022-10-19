@@ -11,5 +11,12 @@ namespace GK_polygon_draw.Model.Relations
     {
         public Line firstLine { get; set; }
 
+        protected Relation(Line firstLine)
+        {
+            this.firstLine = firstLine;
+        }
+
+        public virtual bool CheckIfContainsEdge(Line edge) { return edge == firstLine ? true : false; }
+
     }
 }

@@ -1,12 +1,10 @@
 ﻿using GK_polygon_draw.Model;
 using GK_polygon_draw.Model.Drawings;
+using GK_polygon_draw.Model.Relations;
+using GK_polygon_draw.Model.Repos;
 using GK_polygon_draw.View;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Point = GK_polygon_draw.Model.Drawings.Point;
 
@@ -16,6 +14,7 @@ namespace GK_polygon_draw.Presenter
     {
         public Polygs Polygons { get; set; }
         public Drawer Draw { get; set; }
+        public Relations Rels { get; set; }
         private int State;
         private int Bresenham;
         private IShape MovingObject;
@@ -26,6 +25,7 @@ namespace GK_polygon_draw.Presenter
             Draw = draw;
             State = Bresenham = 0;
             MovingObject = null;
+            Rels = new Relations();
 
             Draw.Canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
             Draw.Canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
@@ -36,90 +36,121 @@ namespace GK_polygon_draw.Presenter
             Draw.BresY.CheckedChanged += new System.EventHandler(this.bresenhamYes_CheckedChanged);
             Draw.BresN.CheckedChanged += new System.EventHandler(this.bresenhamNo_CheckedChanged);
             Draw.InsertMode.CheckedChanged += new System.EventHandler(this.insertMode_CheckedChanged);
+            Draw.setLength.CheckedChanged += new System.EventHandler(this.setLgth_CheckedChanged);
         }
 
         private void canvas_MouseDown(object sender, MouseEventArgs e)
         {
-            if(State == 0)
+            switch (e.Button)
             {
-                if (e.Button == MouseButtons.Left)
-                {
-                    Point point = new Point(e.X, e.Y);
-                    if (Polygons.CreatingPolygon == null)
+                case MouseButtons.Left:
+                    switch (State)
                     {
-                        Polygons.CreatingPolygon = new Polygon();
-                        Draw.DrawPoint(point);
-                        Polygons.CreatingPolygon.AddPoint(point);
-                    }
-                    else
-                    {
-                        if(Polygons.CreatingPolygon.Collision(point) == Polygons.CreatingPolygon.Points[0])
-                        {
-                            if (Polygons.CreatingPolygon.Points.Count < 3)
+                        case 0:
                             {
-                                return;
+                                Point point = new Point(e.X, e.Y);
+                                if (Polygons.CreatingPolygon == null)
+                                {
+                                    Polygons.CreatingPolygon = new Polygon();
+                                    Draw.DrawPoint(point);
+                                    Polygons.CreatingPolygon.AddPoint(point);
+                                }
+                                else
+                                {
+                                    if (Polygons.CreatingPolygon.Collision(point) == Polygons.CreatingPolygon.Points[0])
+                                    {
+                                        if (Polygons.CreatingPolygon.Points.Count < 3)
+                                        {
+                                            return;
+                                        }
+                                        Polygons.CreatingPolygon.Edges.Add(new Line(Polygons.CreatingPolygon.Points[Polygons.CreatingPolygon.NumberOfPoints - 1], Polygons.CreatingPolygon.Points[0]));
+                                        Polygons.AddPolygon(Polygons.CreatingPolygon);
+                                        Draw.DrawPolygons(Polygons.Polygons);
+                                        Polygons.CreatingPolygon = null;
+                                        Draw.RefreshCanvas();
+                                    }
+                                    else
+                                    {
+                                        Draw.DrawPoint(point);
+                                        Draw.DrawLine(new Line(Polygons.CreatingPolygon.Points[Polygons.CreatingPolygon.NumberOfPoints - 1], point));
+                                        Polygons.CreatingPolygon.AddPoint(point);
+                                    }
+                                }
+                                break;
                             }
-                            Polygons.CreatingPolygon.Edges.Add(new Line(Polygons.CreatingPolygon.Points[Polygons.CreatingPolygon.NumberOfPoints - 1], Polygons.CreatingPolygon.Points[0]));
-                            Polygons.AddPolygon(Polygons.CreatingPolygon);
-                            Draw.DrawPolygons(Polygons.Polygons);
-                            Polygons.CreatingPolygon = null;
-                            Draw.RefreshCanvas();
-                        }
-                        else
-                        {
-                            Draw.DrawPoint(point);
-                            Draw.DrawLine(new Line(Polygons.CreatingPolygon.Points[Polygons.CreatingPolygon.NumberOfPoints - 1], point));
-                            Polygons.CreatingPolygon.AddPoint(point);
-                        }
-                    }
-                }
-            }
-            else if(State == 1)
-            {
-                if(e.Button == MouseButtons.Left)
-                {
-                    foreach(var polyg in Polygons.Polygons)
-                    {
-                        var ret = polyg.RemovePoint(new Point(e.X,e.Y));
-                        if (ret == true)
-                            break;
-                    }
-                    Polygons.RemovePolygon();
-                    Draw.DrawPolygons(Polygons.Polygons);
-                    Draw.RefreshCanvas();
-                }
-            }
-            else if(State == 2)
-            {
-                if(e.Button == MouseButtons.Left)
-                {             
-                    foreach(var poly in Polygons.Polygons)
-                    {
-                        MovingObject = poly.Collision(new Point(e.X,e.Y));
-                        if (MovingObject != null)
-                            break;
-                    }           
-                }
-            }   
-            else if(State == 3)
-            {
-                if(e.Button == MouseButtons.Left)
-                {
-                    foreach(var poly in Polygons.Polygons)
-                    {
-                        foreach(var ed in poly.Edges)
-                        {
-                            var ret = ed.Collision(new Point(e.X, e.Y));
-                            if (ret != null)
+                        case 1:
                             {
-                                poly.AddPointOnEdge(ed);
-                                Draw.DrawPolygons(Polygons.Polygons);
-                                Draw.RefreshCanvas();
-                                return;
+                                if (e.Button == MouseButtons.Left)
+                                {
+                                    foreach (var polyg in Polygons.Polygons)
+                                    {
+                                        var ret = polyg.RemovePoint(new Point(e.X, e.Y));
+                                        if (ret == true)
+                                            break;
+                                    }
+                                    Polygons.RemovePolygon();
+                                    Draw.DrawPolygons(Polygons.Polygons);
+                                    Draw.RefreshCanvas();
+                                }
+                                break;
                             }
-                        }
+                        case 2:
+                            {
+                                if (e.Button == MouseButtons.Left)
+                                {
+                                    foreach (var poly in Polygons.Polygons)
+                                    {
+                                        MovingObject = poly.Collision(new Point(e.X, e.Y));
+                                        if (MovingObject != null)
+                                            break;
+                                    }
+                                }
+                                break;
+                            }
+                        case 3:
+                            {
+                                foreach (var poly in Polygons.Polygons)
+                                {
+                                    foreach (var ed in poly.Edges)
+                                    {
+                                        var ret = ed.Collision(new Point(e.X, e.Y));
+                                        if (ret != null)
+                                        {
+                                            poly.AddPointOnEdge(ed);
+                                            Draw.DrawPolygons(Polygons.Polygons);
+                                            Draw.RefreshCanvas();
+                                            return;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        case 4:
+                            {
+                                if (e.Button == MouseButtons.Left)
+                                {
+                                    foreach (var poly in Polygons.Polygons)
+                                    {
+                                        foreach (var ed in poly.Edges)
+                                        {
+                                            var ret = ed.Collision(new Point(e.X, e.Y));
+                                            if (ret != null)
+                                            {
+                                                SetLengthWin newForm = new SetLengthWin((float)Math.Sqrt(Math.Pow(ed.StartPoint.X - ed.EndPoint.X, 2) + Math.Pow(ed.StartPoint.Y - ed.EndPoint.Y, 2)));
+                                                newForm.ShowDialog();
+                                                Rels.AddRelation(new FixedLength(ed, newForm.setLgthVal));
+                                                Draw.DrawPolygons(Polygons.Polygons);
+                                                Draw.DrawLine(ed, Pens.Red);
+                                                Draw.RefreshCanvas();
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            }
                     }
-                }
+                    break;
             }
         }
         private void canvas_MouseMove(object sender, MouseEventArgs e)
@@ -137,14 +168,14 @@ namespace GK_polygon_draw.Presenter
                     Draw.RefreshCanvas();
                 }
             }
-            else if(State == 2 && MovingObject != null)
+            else if (State == 2 && MovingObject != null)
             {
                 MovingObject.Move(e.X, e.Y);
 
                 foreach (var poly in Polygons.Polygons)
                     poly.CountMovingPoint();
                 Draw.DrawPolygons(Polygons.Polygons);
-                foreach(var poly in Polygons.Polygons)
+                foreach (var poly in Polygons.Polygons)
                 {
                     Draw.DrawCenter(poly.movingPoint);
                 }
@@ -154,7 +185,7 @@ namespace GK_polygon_draw.Presenter
 
         private void canvas_MouseUp(object sender, MouseEventArgs e)
         {
-            if(State == 2)
+            if (State == 2)
             {
                 MovingObject = null;
             }
@@ -200,5 +231,12 @@ namespace GK_polygon_draw.Presenter
         {
             Bresenham = 0;
         }
+
+        private void setLgth_CheckedChanged(object sender, EventArgs e)
+        {
+            State = 4;
+            Draw.drawingAlgo.Enabled = false;
+        }
+
     }
 }

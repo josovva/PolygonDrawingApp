@@ -128,6 +128,7 @@
             this.acceptLengthButton.TabIndex = 3;
             this.acceptLengthButton.Text = "Accept";
             this.acceptLengthButton.UseVisualStyleBackColor = true;
+            this.acceptLengthButton.Click += new System.EventHandler(this.acceptLengthButton_Click);
             // 
             // SetLengthWin
             // 

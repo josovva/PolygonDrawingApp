@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GK_polygon_draw.Model.Drawings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,9 @@ namespace GK_polygon_draw.Model.Relations
     {
         public float Length { get; set; }
 
+        public FixedLength(Line edge, float length) : base(edge)
+        {
+            Length = length;
+        }
     }
 }
