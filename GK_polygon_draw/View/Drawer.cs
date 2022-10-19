@@ -66,9 +66,42 @@ namespace GK_polygon_draw.View
             }
         }
 
-        public void DrawLineBresenham(Line Line)
+        public void DrawLineBresenham(Line line)
         {
-
+            float x = line.StartPoint.X;
+            float y = line.StartPoint.Y;
+            float diffX = line.EndPoint.X - line.StartPoint.X;
+            float diffY = line.EndPoint.Y - line.StartPoint.Y;
+            float dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+            if (diffX < 0) dx1 = dx2 = -1; else if (diffX > 0) dx1 = dx2 = 1; // W or E
+            if (diffY < 0) dy1 = -1; else if (diffY > 0) dy1 = 1; // S or N
+            float absdistX = Math.Abs(diffX);
+            float absdistY = Math.Abs(diffY);
+            if (!(absdistX > absdistY)) // horizontal or vertical
+            {
+                absdistX = Math.Abs(diffY);
+                absdistY = Math.Abs(diffX);
+                if (diffY < 0) dy2 = -1; 
+                else if (diffY > 0) dy2 = 1;
+                dx2 = 0;
+            }
+            float numerator = absdistX;
+            for (int i = 0; i <= absdistX; i++)
+            {
+                bitmap.SetPixel((int)x, (int)y, Color.Black);
+                numerator += absdistY;
+                if (!(numerator < absdistX))
+                {
+                    numerator -= absdistX;
+                    x += dx1;
+                    y += dy1;
+                }
+                else
+                {
+                    x += dx2;
+                    y += dy2;
+                }
+            }
         }
 
         public void CleanCanvas()

@@ -130,7 +130,10 @@ namespace GK_polygon_draw.Presenter
                 if (Polygons.CreatingPolygon != null)
                 {
                     Point prev = Draw.DrawPolygon(Polygons.CreatingPolygon);
-                    Draw.DrawLine(new Line(prev, new Point(e.X, e.Y)));
+                    if (Bresenham == 1)
+                        Draw.DrawLineBresenham(new Line(prev, new Point(e.X, e.Y)));
+                    else
+                        Draw.DrawLine(new Line(prev, new Point(e.X, e.Y)));
                     Draw.RefreshCanvas();
                 }
             }
