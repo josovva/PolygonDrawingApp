@@ -5,6 +5,7 @@ using GK_polygon_draw.Model.Repos;
 using GK_polygon_draw.View;
 using System;
 using System.Drawing;
+using System.Numerics;
 using System.Windows.Forms;
 using Point = GK_polygon_draw.Model.Drawings.Point;
 
@@ -18,6 +19,7 @@ namespace GK_polygon_draw.Presenter
         private int State;
         private int Bresenham;
         private IShape MovingObject;
+        private Point MovPoint;
 
         public DrawingLogic(Polygs polygons, Drawer draw)
         {
@@ -27,6 +29,7 @@ namespace GK_polygon_draw.Presenter
             MovingObject = null;
             Rels = new Relations();
 
+            #region EVENT HANDLERS
             Draw.Canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
             Draw.Canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
             Draw.Canvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseUp);
@@ -37,6 +40,7 @@ namespace GK_polygon_draw.Presenter
             Draw.BresN.CheckedChanged += new System.EventHandler(this.bresenhamNo_CheckedChanged);
             Draw.InsertMode.CheckedChanged += new System.EventHandler(this.insertMode_CheckedChanged);
             Draw.setLength.CheckedChanged += new System.EventHandler(this.setLgth_CheckedChanged);
+            #endregion
         }
 
         private void canvas_MouseDown(object sender, MouseEventArgs e)
@@ -46,7 +50,7 @@ namespace GK_polygon_draw.Presenter
                 case MouseButtons.Left:
                     switch (State)
                     {
-                        case 0:
+                        case 0: //DrawingMode
                             {
                                 Point point = new Point(e.X, e.Y);
                                 if (Polygons.CreatingPolygon == null)
@@ -78,7 +82,7 @@ namespace GK_polygon_draw.Presenter
                                 }
                                 break;
                             }
-                        case 1:
+                        case 1: //DeletingMode
                             {
                                 if (e.Button == MouseButtons.Left)
                                 {
@@ -94,7 +98,7 @@ namespace GK_polygon_draw.Presenter
                                 }
                                 break;
                             }
-                        case 2:
+                        case 2: //MovingMode
                             {
                                 if (e.Button == MouseButtons.Left)
                                 {
@@ -102,12 +106,15 @@ namespace GK_polygon_draw.Presenter
                                     {
                                         MovingObject = poly.Collision(new Point(e.X, e.Y));
                                         if (MovingObject != null)
+                                        {
+                                            MovPoint = MovingObject.MovingPoint(new Point(e.X, e.Y));
                                             break;
+                                        }
                                     }
                                 }
                                 break;
                             }
-                        case 3:
+                        case 3: //InsertMode
                             {
                                 foreach (var poly in Polygons.Polygons)
                                 {
@@ -125,7 +132,7 @@ namespace GK_polygon_draw.Presenter
                                 }
                                 break;
                             }
-                        case 4:
+                        case 4: //SetLengthMode
                             {
                                 if (e.Button == MouseButtons.Left)
                                 {
@@ -136,11 +143,18 @@ namespace GK_polygon_draw.Presenter
                                             var ret = ed.Collision(new Point(e.X, e.Y));
                                             if (ret != null)
                                             {
-                                                SetLengthWin newForm = new SetLengthWin((float)Math.Sqrt(Math.Pow(ed.StartPoint.X - ed.EndPoint.X, 2) + Math.Pow(ed.StartPoint.Y - ed.EndPoint.Y, 2)));
+                                                float initLgth = (float)Math.Sqrt(Math.Pow(ed.StartPoint.X - ed.EndPoint.X, 2) + Math.Pow(ed.StartPoint.Y - ed.EndPoint.Y, 2));
+                                                SetLengthWin newForm = new SetLengthWin(initLgth);
                                                 newForm.ShowDialog();
-                                                Rels.AddRelation(new FixedLength(ed, newForm.setLgthVal));
+                                                float newLgth = newForm.setLgthVal;
+                                                Rels.AddRelation(new FixedLength(ed, newLgth));
+
+                                                Vector2 vec = new Vector2(ed.EndPoint.X - ed.StartPoint.X, ed.EndPoint.Y - ed.StartPoint.Y);
+                                                Vector2 vecMultiplied = Vector2.Multiply(vec, newLgth / initLgth);
+                                                vec = Vector2.Subtract(vecMultiplied, vec);
+                                                ed.EndPoint.Move(vec);
+
                                                 Draw.DrawPolygons(Polygons.Polygons);
-                                                Draw.DrawLine(ed, Pens.Red);
                                                 Draw.RefreshCanvas();
                                                 return;
                                             }
@@ -155,31 +169,41 @@ namespace GK_polygon_draw.Presenter
         }
         private void canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (State == 0)
+            switch(State)
             {
-                Draw.DrawPolygons(Polygons.Polygons);
-                if (Polygons.CreatingPolygon != null)
-                {
-                    Point prev = Draw.DrawPolygon(Polygons.CreatingPolygon);
-                    if (Bresenham == 1)
-                        Draw.DrawLineBresenham(new Line(prev, new Point(e.X, e.Y)));
-                    else
-                        Draw.DrawLine(new Line(prev, new Point(e.X, e.Y)));
-                    Draw.RefreshCanvas();
-                }
-            }
-            else if (State == 2 && MovingObject != null)
-            {
-                MovingObject.Move(e.X, e.Y);
+                case 0:
+                    {
+                        Draw.DrawPolygons(Polygons.Polygons);
+                        if (Polygons.CreatingPolygon != null)
+                        {
+                            Point prev = Draw.DrawPolygon(Polygons.CreatingPolygon);
+                            if (Bresenham == 1)
+                                Draw.DrawLineBresenham(new Line(prev, new Point(e.X, e.Y)));
+                            else
+                                Draw.DrawLine(new Line(prev, new Point(e.X, e.Y)));
+                            Draw.RefreshCanvas();
+                        }
+                        break;
+                    }
+                case 2:
+                    {
+                        if(MovingObject != null)
+                        {
+                            var movingVec = MovingObject.MovingVector(new Point(e.X, e.Y), MovPoint);
+                            MovingObject.Move(movingVec);
+                            MovPoint.Move(movingVec);
 
-                foreach (var poly in Polygons.Polygons)
-                    poly.CountMovingPoint();
-                Draw.DrawPolygons(Polygons.Polygons);
-                foreach (var poly in Polygons.Polygons)
-                {
-                    Draw.DrawCenter(poly.movingPoint);
-                }
-                Draw.RefreshCanvas();
+                            foreach (var poly in Polygons.Polygons)
+                                poly.CountMovingPoint();
+                            Draw.DrawPolygons(Polygons.Polygons);
+                            foreach (var poly in Polygons.Polygons)
+                            {
+                                Draw.DrawCenter(poly.movingPoint);
+                            }
+                            Draw.RefreshCanvas();
+                        }
+                        break;
+                    }
             }
         }
 
@@ -188,6 +212,7 @@ namespace GK_polygon_draw.Presenter
             if (State == 2)
             {
                 MovingObject = null;
+                MovPoint = null;
             }
         }
 

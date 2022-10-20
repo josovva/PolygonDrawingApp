@@ -67,14 +67,6 @@ namespace GK_polygon_draw.View
             }
         }
 
-        public void DrawLine(Line line, Pen pen)
-        {
-            using (Graphics g = Graphics.FromImage(bitmap))
-            {
-                g.DrawLine(pen, line.StartPoint.X, line.StartPoint.Y, line.EndPoint.X, line.EndPoint.Y);
-            }
-        }
-
         public void DrawLineBresenham(Line line)
         {
             float x = line.StartPoint.X;

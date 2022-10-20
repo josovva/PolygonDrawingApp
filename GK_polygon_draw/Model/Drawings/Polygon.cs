@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,11 +22,11 @@ namespace GK_polygon_draw.Model.Drawings
             movingPoint = new Point(0, 0);
         }
 
-        public void Move(float MoveX, float MoveY)
+        public void Move(Vector2 vector)
         {
             foreach(var point in Points)
             {
-                point.Move(MoveX - movingPoint.X + point.X, MoveY - movingPoint.Y + point.Y);
+                point.Move(vector);
             }
             CountMovingPoint();
         }
@@ -112,6 +113,16 @@ namespace GK_polygon_draw.Model.Drawings
             }
             return false;
             
+        }
+
+        public Point MovingPoint(Point point)
+        {
+            return movingPoint;
+        }
+
+        public Vector2 MovingVector(Point point, Point movingPoint)
+        {
+            return new Vector2(point.X - movingPoint.X, point.Y - movingPoint.Y);
         }
     }
 }
