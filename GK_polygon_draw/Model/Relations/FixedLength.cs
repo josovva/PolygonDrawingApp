@@ -12,5 +12,10 @@
         {
             return LengthRelation.Constraint;
         }
+
+        public override string ToString()
+        {
+            return "Fixed Length: " + LengthRelation.Constraint.ToString();
+        }
     }
 }

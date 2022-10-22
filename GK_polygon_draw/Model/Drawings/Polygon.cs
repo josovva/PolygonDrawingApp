@@ -86,14 +86,24 @@ namespace GK_polygon_draw.Model.Drawings
         }
         public bool RemovePoint(Point point)
         {
-            var item = Points.Find(p => Math.Abs(p.X - point.X) <= 10 && Math.Abs(p.Y - point.Y) <= 10);
+            var item = Points.Find(p => Math.Abs(p.X - point.X) <= Point.R && Math.Abs(p.Y - point.Y) <= Point.R);
             if (item != null)
             {
                 var edge1 = Edges.Find(e => e.StartPoint.X == item.X && e.StartPoint.Y == item.Y);
                 var edge2 = Edges.Find(e => e.EndPoint.X == item.X && e.EndPoint.Y == item.Y);
                 if (edge1 != null && edge2 != null)
                 {
-                    Edges.Add(new Line(edge2.StartPoint, edge1.EndPoint));
+                    int index = Edges.FindIndex(e => e.StartPoint.X == item.X && item.Y == e.StartPoint.Y);
+                    Edges.Insert(index, new Line(edge2.StartPoint, edge1.EndPoint));
+                    foreach(var e in edge1.PerpEdges)
+                    {
+                        e.Constraint.DeletePerpendicular(edge1);
+                    }
+                    foreach (var e in edge2.PerpEdges)
+                    {
+                        e.Constraint.DeletePerpendicular(edge2);
+                    }
+
                     Edges.Remove(edge1);
                     Edges.Remove(edge2);
                 }
@@ -101,16 +111,21 @@ namespace GK_polygon_draw.Model.Drawings
             }
             return false;
         }
-        public bool AddPointOnEdge(Line edge)
+        public bool InsertPoint(Line edge)
         {
             foreach (var e in Edges)
             {
                 if (e == edge)
                 {
                     Point newP = new Point((edge.StartPoint.X + edge.EndPoint.X) / 2, (edge.StartPoint.Y + edge.EndPoint.Y) / 2);
-                    int index = Points.IndexOf(edge.EndPoint);
-                    Edges.Add(new Line(edge.StartPoint, newP));
-                    Edges.Add(new Line(newP, edge.EndPoint));
+                    int index = Edges.IndexOf(edge);
+                    Edges.Insert(index, new Line(newP, edge.EndPoint));
+                    Edges.Insert(index, new Line(edge.StartPoint, newP));
+
+                    foreach (var item in edge.PerpEdges)
+                    {
+                        item.Constraint.DeletePerpendicular(edge);
+                    }
                     Edges.Remove(edge);
                     return true;
                 }

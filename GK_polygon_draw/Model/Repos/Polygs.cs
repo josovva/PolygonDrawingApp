@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GK_polygon_draw.Model
 {
-    class Polygs
+    public class Polygs
     {
         public List<Polygon> Polygons { get; set; }
         public Polygon CreatingPolygon { get; set; }

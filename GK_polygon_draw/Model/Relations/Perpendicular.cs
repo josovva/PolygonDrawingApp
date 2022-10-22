@@ -3,16 +3,27 @@ using System.Collections.Generic;
 
 namespace GK_polygon_draw.Model.Relations
 {
-    public class Perpendicular
+    public class Perpendicular : Relation<Line>
     {
-        public List<Relation<Line>> PerpEdges { get; set; }
-        public void AddRelation(Line perpRel)
+        private static int GlobalId = 1;
+        private static int Counter = 1;
+        public int Id { get; }
+        public Perpendicular(Line Constraint) : base(Constraint)
         {
-            PerpEdges.Add(new Relation<Line>(perpRel));
+            if (Counter % 2 == 0)
+            {
+                Id = GlobalId++;
+            }
+            else
+            {
+                Id = GlobalId;
+            }
+            Counter++;
         }
-        public void DeleteRelation(Line line)
+        public override string ToString()
         {
-            PerpEdges.RemoveAll(e => e.Constraint.StartPoint == line.StartPoint && e.Constraint.EndPoint == line.EndPoint);
+            return "Perpendicular relation no: " + Id.ToString();
         }
+
     }
 }

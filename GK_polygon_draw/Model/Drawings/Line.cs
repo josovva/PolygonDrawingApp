@@ -1,5 +1,6 @@
 ﻿using GK_polygon_draw.Model.Relations;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace GK_polygon_draw.Model.Drawings
@@ -9,15 +10,16 @@ namespace GK_polygon_draw.Model.Drawings
         public Point StartPoint { get; set; }
         public Point EndPoint { get; set; }
         public FixedLength FixedLgth { get; private set; }
-        public Perpendicular PerpEdges { get; private set; }
+        public List<Perpendicular> PerpEdges { get; private set; }
         public Line()
         {
-            PerpEdges = new Perpendicular();
+            PerpEdges = new List<Perpendicular>();
         }
         public Line(Point startPoint, Point endPoint)
         {
             StartPoint = startPoint;
             EndPoint = endPoint;
+            PerpEdges = new List<Perpendicular>();
         }
         public IShape Collision(Point point)
         {
@@ -74,9 +76,23 @@ namespace GK_polygon_draw.Model.Drawings
         {
             FixedLgth = new FixedLength(length);
         }
+
+        public void DeleteLength()
+        {
+            FixedLgth = null;
+        }
         public void AddPerpendicular(Line edge)
         {
-            PerpEdges.AddRelation(edge);
+            PerpEdges.Add(new Perpendicular(edge));
+        }
+        public void DeletePerpendicular(Line edge)
+        {
+            PerpEdges.RemoveAll(e => e.Constraint.StartPoint == edge.StartPoint && e.Constraint.EndPoint == edge.EndPoint);
+        }
+
+        public void DeletePerpendicular(Perpendicular rel)
+        {
+            PerpEdges.RemoveAll(e => e.Id == rel.Id);
         }
     }
 }
