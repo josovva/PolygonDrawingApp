@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace GK_polygon_draw.Model.Drawings
 {
     public interface IShape
     {
-        public void Move(Vector2 vector);
+        public IShape Collision(Point point);
         public Point MovingPoint(Point point);
         public Vector2 MovingVector(Point point, Point movingPoint);
-        public IShape Collision(Point point);
+        public void Move(Vector2 vector);
     }
 
 }

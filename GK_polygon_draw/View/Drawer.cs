@@ -1,20 +1,15 @@
-﻿using System;
+﻿using GK_polygon_draw.Model.Drawings;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using GK_polygon_draw.Model.Drawings;
-using Point = GK_polygon_draw.Model.Drawings.Point;   
+using Point = GK_polygon_draw.Model.Drawings.Point;
 
 namespace GK_polygon_draw.View
 {
     public partial class Drawer : Form
     {
-        Bitmap bitmap; 
+        Bitmap bitmap;
         public PictureBox Canvas => canvas;
         public RadioButton CreatingMode => creatingMode;
         public RadioButton DeletingMode => deletingMode;
@@ -63,6 +58,11 @@ namespace GK_polygon_draw.View
         {
             using (Graphics g = Graphics.FromImage(bitmap))
             {
+                if (line.FixedLgth != null)
+                {
+                    var length = line.FixedLgth.GetLength();
+                    g.DrawString(length.ToString(), SystemFonts.MessageBoxFont, Brushes.Black, new System.Drawing.Point((int)(line.StartPoint.X + line.EndPoint.X) / 2, (int)(line.StartPoint.Y + line.EndPoint.Y) / 2));
+                }
                 g.DrawLine(Pens.Black, line.StartPoint.X, line.StartPoint.Y, line.EndPoint.X, line.EndPoint.Y);
             }
         }
@@ -82,7 +82,7 @@ namespace GK_polygon_draw.View
             {
                 absdistX = Math.Abs(diffY);
                 absdistY = Math.Abs(diffX);
-                if (diffY < 0) dy2 = -1; 
+                if (diffY < 0) dy2 = -1;
                 else if (diffY > 0) dy2 = 1;
                 dx2 = 0;
             }
@@ -93,7 +93,7 @@ namespace GK_polygon_draw.View
                 {
                     bitmap.SetPixel((int)x, (int)y, Color.Black);
                 }
-                catch(Exception e)
+                catch (Exception)
                 {
                     return;
                 }
@@ -128,17 +128,17 @@ namespace GK_polygon_draw.View
         public Point DrawPolygon(Polygon polygon)
         {
             Point prevP = null;
-            foreach(var item in polygon.Points)
+            
+            foreach(var item in polygon.Edges)
             {
-                if(prevP == null)
+                if(item.EndPoint != null)
                 {
-                    DrawPoint(item);
+                    DrawLine(item);
                 }
-                else
-                {
-                    DrawPoint(item);
-                    DrawLine(new Line(prevP, item));
-                }
+            }
+            foreach (var item in polygon.Points)
+            {
+                 DrawPoint(item);
                 prevP = item;
             }
             return prevP;
@@ -147,7 +147,7 @@ namespace GK_polygon_draw.View
         public void DrawPolygons(List<Polygon> polygons)
         {
             CleanCanvas();
-            foreach(var item in polygons)
+            foreach (var item in polygons)
             {
                 var prev = DrawPolygon(item);
                 DrawLine(new Line(item.Points[0], prev));

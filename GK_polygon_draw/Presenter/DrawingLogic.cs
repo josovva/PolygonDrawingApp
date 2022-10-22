@@ -1,10 +1,8 @@
 ﻿using GK_polygon_draw.Model;
 using GK_polygon_draw.Model.Drawings;
-using GK_polygon_draw.Model.Relations;
-using GK_polygon_draw.Model.Repos;
 using GK_polygon_draw.View;
 using System;
-using System.Drawing;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Windows.Forms;
 using Point = GK_polygon_draw.Model.Drawings.Point;
@@ -15,7 +13,6 @@ namespace GK_polygon_draw.Presenter
     {
         public Polygs Polygons { get; set; }
         public Drawer Draw { get; set; }
-        public Relations Rels { get; set; }
         private int State;
         private int Bresenham;
         private IShape MovingObject;
@@ -27,23 +24,22 @@ namespace GK_polygon_draw.Presenter
             Draw = draw;
             State = Bresenham = 0;
             MovingObject = null;
-            Rels = new Relations();
 
             #region EVENT HANDLERS
-            Draw.Canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
-            Draw.Canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
-            Draw.Canvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseUp);
-            Draw.CreatingMode.CheckedChanged += new System.EventHandler(this.creatingMode_CheckedChanged);
-            Draw.DeletingMode.CheckedChanged += new System.EventHandler(this.deletingMode_CheckedChanged);
-            Draw.MovingMode.CheckedChanged += new System.EventHandler(this.movingMode_CheckedChanged);
-            Draw.BresY.CheckedChanged += new System.EventHandler(this.bresenhamYes_CheckedChanged);
-            Draw.BresN.CheckedChanged += new System.EventHandler(this.bresenhamNo_CheckedChanged);
-            Draw.InsertMode.CheckedChanged += new System.EventHandler(this.insertMode_CheckedChanged);
-            Draw.setLength.CheckedChanged += new System.EventHandler(this.setLgth_CheckedChanged);
+            Draw.Canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseDown);
+            Draw.Canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseMove);
+            Draw.Canvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseUp);
+            Draw.CreatingMode.CheckedChanged += new System.EventHandler(this.CreatingMode_CheckedChanged);
+            Draw.DeletingMode.CheckedChanged += new System.EventHandler(this.DeletingMode_CheckedChanged);
+            Draw.MovingMode.CheckedChanged += new System.EventHandler(this.MovingMode_CheckedChanged);
+            Draw.BresY.CheckedChanged += new System.EventHandler(this.BresenhamYes_CheckedChanged);
+            Draw.BresN.CheckedChanged += new System.EventHandler(this.BresenhamNo_CheckedChanged);
+            Draw.InsertMode.CheckedChanged += new System.EventHandler(this.InsertMode_CheckedChanged);
+            Draw.setLength.CheckedChanged += new System.EventHandler(this.SetLgth_CheckedChanged);
             #endregion
         }
 
-        private void canvas_MouseDown(object sender, MouseEventArgs e)
+        private void Canvas_MouseDown(object sender, MouseEventArgs e)
         {
             switch (e.Button)
             {
@@ -61,17 +57,18 @@ namespace GK_polygon_draw.Presenter
                                 }
                                 else
                                 {
-                                    if (Polygons.CreatingPolygon.Collision(point) == Polygons.CreatingPolygon.Points[0])
+                                    if (Math.Abs(Polygons.CreatingPolygon.Points[0].X - point.X) < Point.R / 2 && Math.Abs(Polygons.CreatingPolygon.Points[0].Y - point.Y) < Point.R / 2)
                                     {
                                         if (Polygons.CreatingPolygon.Points.Count < 3)
                                         {
                                             return;
                                         }
-                                        Polygons.CreatingPolygon.Edges.Add(new Line(Polygons.CreatingPolygon.Points[Polygons.CreatingPolygon.NumberOfPoints - 1], Polygons.CreatingPolygon.Points[0]));
+                                        Polygons.CreatingPolygon.AddPoint(Polygons.CreatingPolygon.Points[0]);
                                         Polygons.AddPolygon(Polygons.CreatingPolygon);
                                         Draw.DrawPolygons(Polygons.Polygons);
                                         Polygons.CreatingPolygon = null;
                                         Draw.RefreshCanvas();
+                                        return;
                                     }
                                     else
                                     {
@@ -147,7 +144,7 @@ namespace GK_polygon_draw.Presenter
                                                 SetLengthWin newForm = new SetLengthWin(initLgth);
                                                 newForm.ShowDialog();
                                                 float newLgth = newForm.setLgthVal;
-                                                Rels.AddRelation(new FixedLength(ed, newLgth));
+                                                ed.AddLength(newLgth);
 
                                                 Vector2 vec = new Vector2(ed.EndPoint.X - ed.StartPoint.X, ed.EndPoint.Y - ed.StartPoint.Y);
                                                 Vector2 vecMultiplied = Vector2.Multiply(vec, newLgth / initLgth);
@@ -167,11 +164,11 @@ namespace GK_polygon_draw.Presenter
                     break;
             }
         }
-        private void canvas_MouseMove(object sender, MouseEventArgs e)
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            switch(State)
+            switch (State)
             {
-                case 0:
+                case 0: //Creating Mode
                     {
                         Draw.DrawPolygons(Polygons.Polygons);
                         if (Polygons.CreatingPolygon != null)
@@ -185,16 +182,24 @@ namespace GK_polygon_draw.Presenter
                         }
                         break;
                     }
-                case 2:
+                case 2: //Moving Mode
                     {
-                        if(MovingObject != null)
+                        if (MovingObject != null)
                         {
                             var movingVec = MovingObject.MovingVector(new Point(e.X, e.Y), MovPoint);
-                            MovingObject.Move(movingVec);
-                            MovPoint.Move(movingVec);
+                            if (MovingObject is Point p)
+                                MoveWithConstraints(p, movingVec);
+                            else if (MovingObject is Line l)
+                            {
+                                MoveWithConstraints(l, movingVec);
+                                MovPoint.Move(movingVec);
+                            }
+                            else
+                            {
+                                MovingObject.Move(movingVec);
+                                MovPoint.Move(movingVec);
+                            }
 
-                            foreach (var poly in Polygons.Polygons)
-                                poly.CountMovingPoint();
                             Draw.DrawPolygons(Polygons.Polygons);
                             foreach (var poly in Polygons.Polygons)
                             {
@@ -206,8 +211,77 @@ namespace GK_polygon_draw.Presenter
                     }
             }
         }
+        private void MoveWithConstraints(Point point, Vector2 vector)
+        {
+            Queue<(Point point, Vector2 vector)> queue = new Queue<(Point, Vector2)>();
+            HashSet<Point> processed = new HashSet<Point>();
 
-        private void canvas_MouseUp(object sender, MouseEventArgs e)
+            Polygon poly = Polygons.GetPolygonWithPoint(point);
+
+            queue.Enqueue((point, vector));
+
+            while (queue.Count > 0)
+            {
+                var currValues = queue.Dequeue();
+                Line FirstEdge = poly.GetLineWithStartPoint(currValues.point);
+                Line SecEdge = poly.GetLineWithEndPoint(currValues.point);
+
+                if (FirstEdge.FixedLgth != null && !processed.Contains(FirstEdge.EndPoint))
+                {
+                    var u = new Vector2(currValues.point.X - FirstEdge.EndPoint.X, currValues.point.Y - FirstEdge.EndPoint.Y) + currValues.vector;
+                    var v = Vector2.Normalize(u) * FirstEdge.FixedLgth.GetLength();
+                    var movingVec = u - v;
+                    queue.Enqueue((FirstEdge.EndPoint, movingVec));
+                }
+                if (SecEdge.FixedLgth != null && !processed.Contains(SecEdge.StartPoint))
+                {
+                    var u = new Vector2(currValues.point.X - SecEdge.StartPoint.X, currValues.point.Y - SecEdge.StartPoint.Y) + currValues.vector;
+                    var v = Vector2.Normalize(u) * SecEdge.FixedLgth.GetLength();
+                    var movingVec = u - v;
+                    queue.Enqueue((SecEdge.StartPoint, movingVec));
+                }
+                currValues.point.Move(currValues.vector);
+                processed.Add(currValues.point);
+            }
+        }
+
+        private void MoveWithConstraints(Line line, Vector2 vector)
+        {
+            Queue<(Point point, Vector2 vector)> queue = new Queue<(Point, Vector2)>();
+            HashSet<Point> processed = new HashSet<Point>();
+
+            Polygon poly = Polygons.GetPolygonWithPoint(line.StartPoint);
+
+            queue.Enqueue((line.StartPoint, vector));
+            queue.Enqueue((line.EndPoint, vector));
+            processed.Add(line.EndPoint);
+
+            while (queue.Count > 0)
+            {
+                var currValues = queue.Dequeue();
+                Line FirstEdge = poly.GetLineWithStartPoint(currValues.point);
+                Line SecEdge = poly.GetLineWithEndPoint(currValues.point);
+
+                if (FirstEdge.FixedLgth != null && !processed.Contains(FirstEdge.EndPoint))
+                {
+                    var u = new Vector2(currValues.point.X - FirstEdge.EndPoint.X, currValues.point.Y - FirstEdge.EndPoint.Y) + currValues.vector;
+                    var v = Vector2.Normalize(u) * FirstEdge.FixedLgth.GetLength();
+                    var movingVec = u - v;
+                    queue.Enqueue((FirstEdge.EndPoint, movingVec));
+                }
+                if (SecEdge.FixedLgth != null && !processed.Contains(SecEdge.StartPoint))
+                {
+                    var u = new Vector2(currValues.point.X - SecEdge.StartPoint.X, currValues.point.Y - SecEdge.StartPoint.Y) + currValues.vector;
+                    var v = Vector2.Normalize(u) * SecEdge.FixedLgth.GetLength();
+                    var movingVec = u - v;
+                    queue.Enqueue((SecEdge.StartPoint, movingVec));
+                }
+                currValues.point.Move(currValues.vector);
+                processed.Add(currValues.point);
+            }
+        }
+
+        private void Canvas_MouseUp(object sender, MouseEventArgs e)
         {
             if (State == 2)
             {
@@ -216,21 +290,22 @@ namespace GK_polygon_draw.Presenter
             }
         }
 
-        private void creatingMode_CheckedChanged(object sender, EventArgs e)
+        #region CHANGE OF MODE
+        private void CreatingMode_CheckedChanged(object sender, EventArgs e)
         {
             State = 0;
             Draw.drawingAlgo.Enabled = true;
             Draw.DrawPolygons(Polygons.Polygons);
             Draw.RefreshCanvas();
         }
-        private void deletingMode_CheckedChanged(object sender, EventArgs e)
+        private void DeletingMode_CheckedChanged(object sender, EventArgs e)
         {
             State = 1;
             Draw.drawingAlgo.Enabled = false;
             Draw.DrawPolygons(Polygons.Polygons);
             Draw.RefreshCanvas();
         }
-        private void movingMode_CheckedChanged(object sender, EventArgs e)
+        private void MovingMode_CheckedChanged(object sender, EventArgs e)
         {
             State = 2;
             MovingObject = null;
@@ -241,27 +316,26 @@ namespace GK_polygon_draw.Presenter
                 Draw.RefreshCanvas();
             }
         }
-        private void insertMode_CheckedChanged(object sender, EventArgs e)
+        private void InsertMode_CheckedChanged(object sender, EventArgs e)
         {
             State = 3;
             Draw.drawingAlgo.Enabled = false;
             Draw.DrawPolygons(Polygons.Polygons);
             Draw.RefreshCanvas();
         }
-        private void bresenhamYes_CheckedChanged(object sender, EventArgs e)
+        private void BresenhamYes_CheckedChanged(object sender, EventArgs e)
         {
             Bresenham = 1;
         }
-        private void bresenhamNo_CheckedChanged(object sender, EventArgs e)
+        private void BresenhamNo_CheckedChanged(object sender, EventArgs e)
         {
             Bresenham = 0;
         }
-
-        private void setLgth_CheckedChanged(object sender, EventArgs e)
+        private void SetLgth_CheckedChanged(object sender, EventArgs e)
         {
             State = 4;
             Draw.drawingAlgo.Enabled = false;
         }
-
+        #endregion
     }
 }

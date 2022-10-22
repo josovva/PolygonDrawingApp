@@ -2,9 +2,6 @@ using GK_polygon_draw.Model;
 using GK_polygon_draw.Presenter;
 using GK_polygon_draw.View;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GK_polygon_draw

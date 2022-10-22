@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using GK_polygon_draw.Model.Relations;
+using System;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GK_polygon_draw.Model.Drawings
 {
@@ -11,13 +8,17 @@ namespace GK_polygon_draw.Model.Drawings
     {
         public Point StartPoint { get; set; }
         public Point EndPoint { get; set; }
-
-        public void Move(Vector2 vector)
+        public FixedLength FixedLgth { get; private set; }
+        public Perpendicular PerpEdges { get; private set; }
+        public Line()
         {
-            StartPoint.Move(vector);
-            EndPoint.Move(vector);
+            PerpEdges = new Perpendicular();
         }
-
+        public Line(Point startPoint, Point endPoint)
+        {
+            StartPoint = startPoint;
+            EndPoint = endPoint;
+        }
         public IShape Collision(Point point)
         {
             double dist = Point.R;
@@ -25,28 +26,22 @@ namespace GK_polygon_draw.Model.Drawings
             {
                 dist = Math.Abs(point.X - StartPoint.X);
             }
-            else if(StartPoint.Y - EndPoint.Y == 0)
+            else if (StartPoint.Y - EndPoint.Y == 0)
             {
-                dist = Math.Abs(point.Y - StartPoint.Y);;
+                dist = Math.Abs(point.Y - StartPoint.Y); ;
             }
             else
             {
                 float A = (StartPoint.Y - EndPoint.Y) / (StartPoint.X - EndPoint.X);
                 float B = (StartPoint.Y - A * StartPoint.X);
                 dist = Math.Abs(A * point.X - point.Y + B) / Math.Sqrt(Math.Pow(A, 2) + 1);
-                
+
             }
-            if (dist < Point.R && ((point.Y <= Math.Max(StartPoint.Y, EndPoint.Y) + Point.R / 2 && point.Y >= Math.Min(StartPoint.Y, EndPoint.Y) - Point.R / 2)
+            if (dist < Point.R / 2 && ((point.Y <= Math.Max(StartPoint.Y, EndPoint.Y) + Point.R / 2 && point.Y >= Math.Min(StartPoint.Y, EndPoint.Y) - Point.R / 2)
                 && ((point.X <= Math.Max(StartPoint.X, EndPoint.X) + Point.R / 2 && point.X >= Math.Min(StartPoint.X, EndPoint.X) - Point.R / 2))))
                 return this;
             return null;
         }
-
-        public Vector2 MovingVector(Point point, Point movingPoint)
-        {
-            return new Vector2(point.X - movingPoint.X, point.Y - movingPoint.Y);
-        }
-
         public Point MovingPoint(Point point)
         {
             Point closePoint = new Point((StartPoint.X + EndPoint.X) / 2, (StartPoint.Y + EndPoint.Y) / 2);
@@ -66,15 +61,22 @@ namespace GK_polygon_draw.Model.Drawings
 
             }
         }
-
-        public Line(Point startPoint, Point endPoint)
+        public Vector2 MovingVector(Point point, Point movingPoint)
         {
-            StartPoint = startPoint;
-            EndPoint = endPoint;
+            return new Vector2(point.X - movingPoint.X, point.Y - movingPoint.Y);
         }
-
-        public Line()
+        public void Move(Vector2 vector)
         {
+            StartPoint.Move(vector);
+            EndPoint.Move(vector);
+        }
+        public void AddLength(float length)
+        {
+            FixedLgth = new FixedLength(length);
+        }
+        public void AddPerpendicular(Line edge)
+        {
+            PerpEdges.AddRelation(edge);
         }
     }
 }
