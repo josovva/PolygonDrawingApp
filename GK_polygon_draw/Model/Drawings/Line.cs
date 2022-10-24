@@ -76,7 +76,6 @@ namespace GK_polygon_draw.Model.Drawings
         {
             FixedLgth = new FixedLength(length);
         }
-
         public void DeleteLength()
         {
             FixedLgth = null;
@@ -89,7 +88,6 @@ namespace GK_polygon_draw.Model.Drawings
         {
             PerpEdges.RemoveAll(e => e.Constraint.StartPoint == edge.StartPoint && e.Constraint.EndPoint == edge.EndPoint);
         }
-
         public void DeletePerpendicular(Perpendicular rel)
         {
             PerpEdges.RemoveAll(e => e.Id == rel.Id);

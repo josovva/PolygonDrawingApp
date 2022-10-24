@@ -34,6 +34,7 @@
             this.lengthUpDown = new System.Windows.Forms.NumericUpDown();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.acceptLengthButton = new System.Windows.Forms.Button();
+            this.cancelButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lengthUpDown)).BeginInit();
@@ -106,11 +107,14 @@
             // 
             // tableLayoutPanel3
             // 
-            this.tableLayoutPanel3.ColumnCount = 3;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel3.ColumnCount = 5;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14.28546F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.71454F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.71454F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14.28546F));
             this.tableLayoutPanel3.Controls.Add(this.acceptLengthButton, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.cancelButton, 3, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 79);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -121,20 +125,35 @@
             // 
             // acceptLengthButton
             // 
+            this.acceptLengthButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.acceptLengthButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.acceptLengthButton.Location = new System.Drawing.Point(93, 3);
+            this.acceptLengthButton.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.acceptLengthButton.Location = new System.Drawing.Point(38, 3);
             this.acceptLengthButton.Name = "acceptLengthButton";
-            this.acceptLengthButton.Size = new System.Drawing.Size(84, 27);
+            this.acceptLengthButton.Size = new System.Drawing.Size(83, 27);
             this.acceptLengthButton.TabIndex = 3;
             this.acceptLengthButton.Text = "Accept";
             this.acceptLengthButton.UseVisualStyleBackColor = true;
             this.acceptLengthButton.Click += new System.EventHandler(this.acceptLengthButton_Click);
             // 
+            // cancelButton
+            // 
+            this.cancelButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cancelButton.Location = new System.Drawing.Point(147, 3);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(83, 27);
+            this.cancelButton.TabIndex = 4;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
             // SetLengthWin
             // 
+            this.AcceptButton = this.acceptLengthButton;
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.Dialog;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(277, 115);
             this.ControlBox = false;
             this.Controls.Add(this.tableLayoutPanel1);
@@ -157,5 +176,6 @@
         private System.Windows.Forms.NumericUpDown lengthUpDown;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Button acceptLengthButton;
+        private System.Windows.Forms.Button cancelButton;
     }
 }

@@ -75,23 +75,7 @@ namespace GK_polygon_draw.View
         }
         public void DrawLine(Line line)
         {
-            using (Graphics g = Graphics.FromImage(bitmap))
-            {
-                string str = "";
-                if (line.FixedLgth != null)
-                {
-                    var length = (int)line.FixedLgth.GetLength();
-                    str += length.ToString();
-                    g.DrawString(str, SystemFonts.MessageBoxFont, Brushes.DarkRed, new System.Drawing.Point((int)(line.StartPoint.X + line.EndPoint.X) / 2 - str.Length /2, (int)(line.StartPoint.Y + line.EndPoint.Y) / 2));
-                    str = "\n";
-                }
-                foreach (var item in line.PerpEdges)
-                {
-                    str += item.Id.ToString() + " ";
-                }
-                g.DrawString(str, SystemFonts.MessageBoxFont, Brushes.DarkMagenta, new System.Drawing.Point((int)(line.StartPoint.X + line.EndPoint.X) / 2 - str.Length /2, (int)(line.StartPoint.Y + line.EndPoint.Y) / 2));
-                g.DrawLine(Pens.Black, line.StartPoint.X, line.StartPoint.Y, line.EndPoint.X, line.EndPoint.Y);
-            }
+            DrawLine(line, Pens.Black);
         }
         public void DrawLine(Line line, Pen pen)
         {
@@ -102,16 +86,14 @@ namespace GK_polygon_draw.View
                 {
                     var length = (int)line.FixedLgth.GetLength();
                     str += length.ToString();
-                    g.DrawString(str, SystemFonts.MessageBoxFont, Brushes.DarkRed, new System.Drawing.Point((int)(line.StartPoint.X + line.EndPoint.X) / 2 - str.Length / 2, (int)(line.StartPoint.Y + line.EndPoint.Y) / 2));
+                    g.DrawString(str, SystemFonts.MessageBoxFont, Brushes.DarkViolet, new System.Drawing.Point((int)(line.StartPoint.X + line.EndPoint.X) / 2 - str.Length, (int)(line.StartPoint.Y + line.EndPoint.Y) / 2));
                     str = "\n";
-                    //g.DrawString(length.ToString(), SystemFonts.MessageBoxFont, Brushes.Black, new System.Drawing.Point((int)(line.StartPoint.X + line.EndPoint.X) / 2, (int)(line.StartPoint.Y + line.EndPoint.Y) / 2));
                 }
                 foreach (var item in line.PerpEdges)
                 {
                     str += item.Id.ToString() + " ";
-                    //var length = (int)item.Id;
                 }
-                g.DrawString(str, SystemFonts.MessageBoxFont, Brushes.DarkMagenta, new System.Drawing.Point((int)(line.StartPoint.X + line.EndPoint.X) / 2 - str.Length / 2, (int)(line.StartPoint.Y + line.EndPoint.Y) / 2));
+                g.DrawString(str, SystemFonts.MessageBoxFont, Brushes.DarkMagenta, new System.Drawing.Point((int)(line.StartPoint.X + line.EndPoint.X) / 2 - str.Length, (int)(line.StartPoint.Y + line.EndPoint.Y) / 2));
                 g.DrawLine(pen, line.StartPoint.X, line.StartPoint.Y, line.EndPoint.X, line.EndPoint.Y);
             }
         }

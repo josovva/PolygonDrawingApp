@@ -47,11 +47,11 @@ namespace GK_polygon_draw.View
             this.perpConstraint = new System.Windows.Forms.RadioButton();
             this.lgthConstraints = new System.Windows.Forms.RadioButton();
             this.constraintBox = new System.Windows.Forms.GroupBox();
+            this.constraintsLayout = new System.Windows.Forms.TableLayoutPanel();
             this.constraintsList = new System.Windows.Forms.ListBox();
             this.deleteButtonLayout = new System.Windows.Forms.TableLayoutPanel();
             this.delConstraintButton = new System.Windows.Forms.Button();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.constraintsLayout = new System.Windows.Forms.TableLayoutPanel();
             this.fullLayout.SuspendLayout();
             this.optionsLayout.SuspendLayout();
             this.modeSelector.SuspendLayout();
@@ -59,9 +59,9 @@ namespace GK_polygon_draw.View
             this.DrawingAlgorithm.SuspendLayout();
             this.modifyConstraintsBox.SuspendLayout();
             this.constraintBox.SuspendLayout();
+            this.constraintsLayout.SuspendLayout();
             this.deleteButtonLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
-            this.constraintsLayout.SuspendLayout();
             this.SuspendLayout();
             // 
             // fullLayout
@@ -115,7 +115,7 @@ namespace GK_polygon_draw.View
             // 
             this.modifyConstraint.AutoSize = true;
             this.modifyConstraint.Dock = System.Windows.Forms.DockStyle.Left;
-            this.modifyConstraint.Location = new System.Drawing.Point(482, 19);
+            this.modifyConstraint.Location = new System.Drawing.Point(471, 19);
             this.modifyConstraint.Name = "modifyConstraint";
             this.modifyConstraint.Size = new System.Drawing.Size(126, 21);
             this.modifyConstraint.TabIndex = 6;
@@ -127,7 +127,7 @@ namespace GK_polygon_draw.View
             // 
             this.perpendicularButton.AutoSize = true;
             this.perpendicularButton.Dock = System.Windows.Forms.DockStyle.Left;
-            this.perpendicularButton.Location = new System.Drawing.Point(352, 19);
+            this.perpendicularButton.Location = new System.Drawing.Point(341, 19);
             this.perpendicularButton.Name = "perpendicularButton";
             this.perpendicularButton.Size = new System.Drawing.Size(130, 21);
             this.perpendicularButton.TabIndex = 5;
@@ -139,7 +139,7 @@ namespace GK_polygon_draw.View
             // 
             this.setLgthButton.AutoSize = true;
             this.setLgthButton.Dock = System.Windows.Forms.DockStyle.Left;
-            this.setLgthButton.Location = new System.Drawing.Point(271, 19);
+            this.setLgthButton.Location = new System.Drawing.Point(260, 19);
             this.setLgthButton.Name = "setLgthButton";
             this.setLgthButton.Size = new System.Drawing.Size(81, 21);
             this.setLgthButton.TabIndex = 4;
@@ -151,7 +151,7 @@ namespace GK_polygon_draw.View
             // 
             this.insertMode.AutoSize = true;
             this.insertMode.Dock = System.Windows.Forms.DockStyle.Left;
-            this.insertMode.Location = new System.Drawing.Point(186, 19);
+            this.insertMode.Location = new System.Drawing.Point(175, 19);
             this.insertMode.Name = "insertMode";
             this.insertMode.Size = new System.Drawing.Size(85, 21);
             this.insertMode.TabIndex = 3;
@@ -163,7 +163,7 @@ namespace GK_polygon_draw.View
             // 
             this.movingMode.AutoSize = true;
             this.movingMode.Dock = System.Windows.Forms.DockStyle.Left;
-            this.movingMode.Location = new System.Drawing.Point(131, 19);
+            this.movingMode.Location = new System.Drawing.Point(120, 19);
             this.movingMode.Name = "movingMode";
             this.movingMode.Size = new System.Drawing.Size(55, 21);
             this.movingMode.TabIndex = 2;
@@ -177,10 +177,10 @@ namespace GK_polygon_draw.View
             this.deletingMode.Dock = System.Windows.Forms.DockStyle.Left;
             this.deletingMode.Location = new System.Drawing.Point(62, 19);
             this.deletingMode.Name = "deletingMode";
-            this.deletingMode.Size = new System.Drawing.Size(69, 21);
+            this.deletingMode.Size = new System.Drawing.Size(58, 21);
             this.deletingMode.TabIndex = 1;
             this.deletingMode.TabStop = true;
-            this.deletingMode.Text = "Deleting";
+            this.deletingMode.Text = "Delete";
             this.deletingMode.UseVisualStyleBackColor = true;
             // 
             // creatingMode
@@ -293,6 +293,21 @@ namespace GK_polygon_draw.View
             this.constraintBox.TabStop = false;
             this.constraintBox.Text = "List Of Constraints";
             // 
+            // constraintsLayout
+            // 
+            this.constraintsLayout.ColumnCount = 2;
+            this.constraintsLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
+            this.constraintsLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.constraintsLayout.Controls.Add(this.constraintsList, 0, 0);
+            this.constraintsLayout.Controls.Add(this.deleteButtonLayout, 1, 0);
+            this.constraintsLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.constraintsLayout.Location = new System.Drawing.Point(3, 19);
+            this.constraintsLayout.Name = "constraintsLayout";
+            this.constraintsLayout.RowCount = 1;
+            this.constraintsLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.constraintsLayout.Size = new System.Drawing.Size(447, 93);
+            this.constraintsLayout.TabIndex = 8;
+            // 
             // constraintsList
             // 
             this.constraintsList.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -337,21 +352,6 @@ namespace GK_polygon_draw.View
             this.canvas.TabIndex = 1;
             this.canvas.TabStop = false;
             // 
-            // constraintsLayout
-            // 
-            this.constraintsLayout.ColumnCount = 2;
-            this.constraintsLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
-            this.constraintsLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.constraintsLayout.Controls.Add(this.constraintsList, 0, 0);
-            this.constraintsLayout.Controls.Add(this.deleteButtonLayout, 1, 0);
-            this.constraintsLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.constraintsLayout.Location = new System.Drawing.Point(3, 19);
-            this.constraintsLayout.Name = "constraintsLayout";
-            this.constraintsLayout.RowCount = 1;
-            this.constraintsLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.constraintsLayout.Size = new System.Drawing.Size(447, 93);
-            this.constraintsLayout.TabIndex = 8;
-            // 
             // Drawer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -371,9 +371,9 @@ namespace GK_polygon_draw.View
             this.modifyConstraintsBox.ResumeLayout(false);
             this.modifyConstraintsBox.PerformLayout();
             this.constraintBox.ResumeLayout(false);
+            this.constraintsLayout.ResumeLayout(false);
             this.deleteButtonLayout.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
-            this.constraintsLayout.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

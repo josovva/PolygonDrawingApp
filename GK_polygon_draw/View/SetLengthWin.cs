@@ -17,5 +17,11 @@ namespace GK_polygon_draw.View
         {
             Close();
         }
+
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            lengthUpDown.Value = 0;
+            Close();
+        }
     }
 }
